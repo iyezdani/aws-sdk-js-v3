@@ -1,0 +1,8 @@
+label:  sonnet-5-5
+date:   2026-11-20T01:28:29Z
+head:   b7a45386a249837876ac8a2c3d213b96c0d95fd5 (eval/sonnet-5-5)
+node:   v20.20.0
+changes vs pin, outside assessment/:
+ packages/rds-signer/src/Signer.spec.ts | 53 ++++++++++++++++++++++++++++++++++
+ packages/rds-signer/src/Signer.ts      | 17 +++++++++--
+ 2 files changed, 68 insertions(+), 2 deletions(-)

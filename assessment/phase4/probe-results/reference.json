@@ -1,0 +1,32 @@
+{
+  "P1": {
+    "callA": "token signed with CACHED after 5000ms",
+    "callB": "token signed with FRESH1 after 500ms",
+    "forcedRefreshCalls": 2
+  },
+  "P2": {
+    "sequentialForcedCalls": 1,
+    "concurrentForcedCalls": 1,
+    "sequentialOutcomes": [
+      "token signed with CACHED after 5000ms",
+      "token signed with CACHED after 0ms",
+      "token signed with CACHED after 0ms",
+      "token signed with CACHED after 0ms",
+      "token signed with CACHED after 0ms"
+    ]
+  },
+  "P3": {
+    "4900ms": {
+      "outcome": "rejected after 5000ms: @aws-sdk/rds-signer - cached credentials expired before a refresh completed.",
+      "validForMsAtReturn": null
+    },
+    "5000ms": {
+      "outcome": "rejected after 5000ms: @aws-sdk/rds-signer - cached credentials expired before a refresh completed.",
+      "validForMsAtReturn": null
+    },
+    "6000ms": {
+      "outcome": "token signed with CACHED after 5000ms",
+      "validForMsAtReturn": 1000
+    }
+  }
+}

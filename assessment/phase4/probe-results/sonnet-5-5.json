@@ -1,0 +1,32 @@
+{
+  "P1": {
+    "callA": "token signed with CACHED after 5000ms",
+    "callB": "token signed with FRESH1 after 500ms",
+    "forcedRefreshCalls": 2
+  },
+  "P2": {
+    "sequentialForcedCalls": 5,
+    "concurrentForcedCalls": 10,
+    "sequentialOutcomes": [
+      "token signed with CACHED after 5000ms",
+      "token signed with CACHED after 5000ms",
+      "token signed with CACHED after 5000ms",
+      "token signed with CACHED after 5000ms",
+      "token signed with CACHED after 5000ms"
+    ]
+  },
+  "P3": {
+    "4900ms": {
+      "outcome": "token signed with CACHED after 5000ms",
+      "validForMsAtReturn": -100
+    },
+    "5000ms": {
+      "outcome": "token signed with CACHED after 5000ms",
+      "validForMsAtReturn": 0
+    },
+    "6000ms": {
+      "outcome": "token signed with CACHED after 5000ms",
+      "validForMsAtReturn": 1000
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "I1.fallbackMs.plain": 5000,
+  "I1.fallbackMs.chain": 5000,
+  "R2.refreshCalls": 2,
+  "R4.plainSlowFail": "token signed with CACHED after 2000ms",
+  "R4.chainSlowFail": "token signed with CACHED after 2000ms",
+  "R4.plainStall": "token signed with CACHED after 2000ms",
+  "R5.fail": "token signed with EXPIRED after 0ms",
+  "R5.stall": "pending",
+  "R7.plain": {
+    "before": 1,
+    "after": 1,
+    "keys": [
+      "FRESH6",
+      "FRESH7",
+      "FRESH8"
+    ]
+  },
+  "R7.chain": {
+    "before": 1,
+    "after": 1,
+    "keys": [
+      "FRESH9",
+      "FRESH9",
+      "FRESH9"
+    ]
+  },
+  "I2.sequentialLatenciesMs": [
+    5000,
+    5000,
+    5000,
+    5000,
+    5000
+  ],
+  "I3.recovery": {
+    "callA": "token signed with CACHED after 5000ms",
+    "callB": "token signed with CACHED after 5000ms",
+    "refreshCalls": 1
+  },
+  "I4.forcedCallsFor10Concurrent": 1,
+  "I5.consoleOnFallback": {
+    "outcome": "token signed with CACHED after 5000ms",
+    "calls": []
+  },
+  "I6.pendingFakeTimers": {
+    "outcome": "token signed with FRESH14 after 500ms",
+    "timers": 0
+  },
+  "I7.refreshCalls": 2,
+  "I8.signedWith": "token signed with CACHED after 500ms"
+}

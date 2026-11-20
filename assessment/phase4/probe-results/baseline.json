@@ -1,0 +1,32 @@
+{
+  "P1": {
+    "callA": "pending",
+    "callB": "token signed with FRESH1 after 500ms",
+    "forcedRefreshCalls": 2
+  },
+  "P2": {
+    "sequentialForcedCalls": 5,
+    "concurrentForcedCalls": 10,
+    "sequentialOutcomes": [
+      "pending",
+      "pending",
+      "pending",
+      "pending",
+      "pending"
+    ]
+  },
+  "P3": {
+    "4900ms": {
+      "outcome": "pending",
+      "validForMsAtReturn": null
+    },
+    "5000ms": {
+      "outcome": "pending",
+      "validForMsAtReturn": null
+    },
+    "6000ms": {
+      "outcome": "pending",
+      "validForMsAtReturn": null
+    }
+  }
+}

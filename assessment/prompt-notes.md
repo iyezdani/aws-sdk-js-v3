@@ -34,8 +34,9 @@ This is the source for write-up Section 5, "The prompt". It records what the pro
 - **What to do when nothing valid remains.** Keep waiting, or reject. Both are accepted; returning expired credentials is not.
 - **Scope.** Signer only, or also the memoizer, which takes in #8358.
 
-## How each model read it (fill in after Phase 4)
+## How each model read it (filled in after Phase 4; details in phase4/evaluation.md §5)
 
-- Model A:
-- Model B:
-- What the prompt should have said, in hindsight:
+- **Opus 5.5.** It read "block" as *bound the wait*, with a 5 s private constant and an offer to make it configurable, and stayed in the signer. It reasoned about validity: it capped the wait at the remaining lifetime and kept waiting for already-expired credentials. But it never re-checked expiry at the moment of fallback, so it returns credentials at their expiry instant (O1), and expired ones when the refresh fails (O2). It named the short-token trade-off. It did not follow "default provider chain" into the memoizer.
+- **Sonnet 5.5.** Same reading of "block" and the same 5 s, with the smallest change that satisfies the sentence: a timeout plus fallback. It took "still valid" purely as the premise and never as a condition to check, so the fallback also applies to expired credentials (S1, S2). It named the short-token trade-off. It read only the signer and its tests.
+- **Where they diverged.** In how far they went beyond the sentence: Opus considered expiry, concurrency and leaks; Sonnet considered timer cleanup and unhandled rejections only. Neither treated the provider chain mentioned in the prompt as something to inspect.
+- **What the prompt should have said, in hindsight (to write up in Section 5).** Two additions would have changed what the outputs could show. A request to "list the edge cases you considered" would have exposed each model's reasoning about expiry directly. Naming the success criterion ("a token must never be signed with credentials that have expired") would have tested implementation rather than discovery. Leaving out #8358 worked as intended: neither model looked.

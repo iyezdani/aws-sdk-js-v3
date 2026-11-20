@@ -1,0 +1,21 @@
+{
+  "R10a.stsRequests": 2,
+  "R10b.stsRequests": 2,
+  "R10c": {
+    "stsRequests": 10,
+    "keys": [
+      "ASIAFAKE0007",
+      "ASIAFAKE0007",
+      "ASIAFAKE0007",
+      "ASIAFAKE0007",
+      "ASIAFAKE0007"
+    ]
+  },
+  "R10d": {
+    "stsRequests": 1,
+    "signedWith": "ASIAFAKE0009",
+    "cachedKey": "ASIAFAKE0008"
+  },
+  "R10e.forcedCallerOutcome": "rejected",
+  "I7b.linkCallsAfterWarm": 2
+}
