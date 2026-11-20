@@ -196,6 +196,59 @@ describe("rds-signer", () => {
       expect(result).toEqual(originalCreds);
     });
 
+    it("should return original credentials if force refresh never settles", async () => {
+      vi.useFakeTimers();
+      try {
+        const originalCreds = {
+          accessKeyId: "expiring",
+          secretAccessKey: "secret",
+          expiration: new Date(Date.now() + 2 * 60_000),
+        };
+        const provider = vi
+          .fn()
+          .mockResolvedValueOnce(originalCreds)
+          .mockImplementationOnce(() => new Promise(() => {}));
+        const signer = new Signer({ ...minimalParams, credentials: provider });
+        await signer.getAuthToken();
+        //@ts-ignore
+        const wrappedProvider = SignatureV4.mock.calls[0][0].credentials;
+        const pending = wrappedProvider();
+        await vi.advanceTimersByTimeAsync(5_000);
+        expect(await pending).toEqual(originalCreds);
+        expect(provider).toHaveBeenCalledTimes(2);
+        expect(vi.getTimerCount()).toBe(0);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it("should clear the timeout when the refresh completes", async () => {
+      vi.useFakeTimers();
+      try {
+        const refreshedCreds = {
+          accessKeyId: "refreshed",
+          secretAccessKey: "secret",
+          expiration: new Date(Date.now() + 60 * 60_000),
+        };
+        const provider = vi
+          .fn()
+          .mockResolvedValueOnce({
+            accessKeyId: "expiring",
+            secretAccessKey: "secret",
+            expiration: new Date(Date.now() + 2 * 60_000),
+          })
+          .mockResolvedValueOnce(refreshedCreds);
+        const signer = new Signer({ ...minimalParams, credentials: provider });
+        await signer.getAuthToken();
+        //@ts-ignore
+        const wrappedProvider = SignatureV4.mock.calls[0][0].credentials;
+        expect(await wrappedProvider()).toEqual(refreshedCreds);
+        expect(vi.getTimerCount()).toBe(0);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
     it("should not wrap static credential objects", async () => {
       const staticCreds = {
         accessKeyId: "static",

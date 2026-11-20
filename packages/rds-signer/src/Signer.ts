@@ -52,6 +52,10 @@ export interface SignerConfig {
 }
 
 const MINUTE_MS = 60_000;
+/**
+ * Maximum time to wait for the optional early credential refresh.
+ */
+const REFRESH_TIMEOUT_MS = 5_000;
 
 /**
  * The signer class that generates an auth token to a database.
@@ -118,12 +122,21 @@ export class Signer {
     return async (identityProperties?: Record<string, any>) => {
       const credentials = await provider(identityProperties);
       if (credentials.expiration && credentials.expiration.getTime() - Date.now() < 15 * MINUTE_MS) {
+        let timer: ReturnType<typeof setTimeout> | undefined;
         try {
-          const refreshed = await provider({ ...identityProperties, forceRefresh: true });
+          // The early refresh is an optimization. If it stalls, fall back to the
+          // still-cached credentials instead of blocking token generation.
+          const timeout = new Promise<never>((_, reject) => {
+            timer = setTimeout(() => reject(new Error("credential refresh timed out")), REFRESH_TIMEOUT_MS);
+          });
+          const refreshed = await Promise.race([provider({ ...identityProperties, forceRefresh: true }), timeout]);
           if (!refreshed.expiration || refreshed.expiration.getTime() - Date.now() >= 15 * MINUTE_MS) {
             return refreshed;
           }
-        } catch {}
+        } catch {
+        } finally {
+          clearTimeout(timer);
+        }
       }
       return credentials;
     };
