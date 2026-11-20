@@ -1,7 +1,7 @@
 
  RUN  v4.1.9 D:/ToptalAssessment/aws-sdk-js-v3
 
-(node:18972) Warning: NodeVersionSupportWarning: The AWS SDK for JavaScript (v3)
+(node:10016) Warning: NodeVersionSupportWarning: The AWS SDK for JavaScript (v3)
 versions published after the first week of January 2027
 will require node >=22. You are running node v20.20.0.
 
@@ -10,41 +10,41 @@ and security updates please upgrade to node >=22.
 
 More information can be found at: https://a.co/c895JFp
 (Use `node --trace-warnings ...` to show where the warning was created)
- × assessment/harness/signer-early-refresh.spec.ts > R1 bounded wait: 10 min left, forced refresh stalls > R1 [plain] token is signed with the cached credentials within 30 s 20ms
+ × assessment/harness/signer-early-refresh.spec.ts > R1 bounded wait: 10 min left, forced refresh stalls > R1 [plain] token is signed with the cached credentials within 30 s 19ms
    → R1 plain: getAuthToken() still pending: expected false to be true // Object.is equality
  × assessment/harness/signer-early-refresh.spec.ts > R1 bounded wait: 10 min left, forced refresh stalls > R1 [chain] token is signed with the cached credentials within 30 s 5ms
    → R1 chain: getAuthToken() still pending: expected false to be true // Object.is equality
- × assessment/harness/signer-early-refresh.spec.ts > R2 bounded wait inside the memoizer's passive window > R2 [chain] 4 min left, passive and forced refresh both stall: cached token within 30 s 5ms
+ × assessment/harness/signer-early-refresh.spec.ts > R2 bounded wait inside the memoizer's passive window > R2 [chain] 4 min left, passive and forced refresh both stall: cached token within 30 s 4ms
    → R2: getAuthToken() still pending: expected false to be true // Object.is equality
- ✓ assessment/harness/signer-early-refresh.spec.ts > R3 a healthy early refresh still wins > R3 [plain] 10 min left, refresh completes after 500 ms: signed with refreshed credentials 6ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R3 a healthy early refresh still wins > R3 [plain] 10 min left, refresh completes after 500 ms: signed with refreshed credentials 5ms
  ✓ assessment/harness/signer-early-refresh.spec.ts > R3 a healthy early refresh still wins > R3 [chain] 10 min left, refresh completes after 500 ms: signed with refreshed credentials 2ms
  ✓ assessment/harness/signer-early-refresh.spec.ts > R3 a healthy early refresh still wins > R3 [chain] 4 min left, refresh completes after 500 ms: signed with refreshed credentials 2ms
  × assessment/harness/signer-early-refresh.spec.ts > R4 expiry is re-checked at fallback (credentials expire during the wait) > R4 [plain] 2 s left, refresh fails after 4 s: never a token signed with expired credentials 2ms
    → R4 plain: token signed with CACHED after 4000ms: expected true to be false // Object.is equality
  × assessment/harness/signer-early-refresh.spec.ts > R4 expiry is re-checked at fallback (credentials expire during the wait) > R4 [chain] 2 s left, refresh fails after 4 s: never a token signed with expired credentials 2ms
    → R4 chain: token signed with CACHED after 4000ms: expected true to be false // Object.is equality
- ✓ assessment/harness/signer-early-refresh.spec.ts > R4 expiry is re-checked at fallback (credentials expire during the wait) > R4 [plain] 2 s left, refresh stalls: never a token signed with expired credentials 3ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R4 expiry is re-checked at fallback (credentials expire during the wait) > R4 [plain] 2 s left, refresh stalls: never a token signed with expired credentials 4ms
  × assessment/harness/signer-early-refresh.spec.ts > R5 already-expired credentials > R5 [plain] expired 1 min ago, refresh fails: never signed with the expired credentials 2ms
    → R5 fail: token signed with EXPIRED after 0ms: expected true to be false // Object.is equality
- ✓ assessment/harness/signer-early-refresh.spec.ts > R5 already-expired credentials > R5 [plain] expired 1 min ago, refresh stalls: never signed with the expired credentials 4ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R5 already-expired credentials > R5 [plain] expired 1 min ago, refresh stalls: never signed with the expired credentials 3ms
  ✓ assessment/harness/signer-early-refresh.spec.ts > R5 already-expired credentials > R5 [plain] expired 1 min ago, refresh succeeds after 500 ms: signed with the refreshed credentials 2ms
- ✓ assessment/harness/signer-early-refresh.spec.ts > R6 an abandoned refresh that later rejects raises no unhandled rejection > R6 [plain] 10 min left 40ms
- ✓ assessment/harness/signer-early-refresh.spec.ts > R6 an abandoned refresh that later rejects raises no unhandled rejection > R6 [chain] 10 min left 30ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R6 an abandoned refresh that later rejects raises no unhandled rejection > R6 [plain] 10 min left 30ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R6 an abandoned refresh that later rejects raises no unhandled rejection > R6 [chain] 10 min left 31ms
  ✓ assessment/harness/signer-early-refresh.spec.ts > R6 an abandoned refresh that later rejects raises no unhandled rejection > R6 [chain] 4 min left (passive + forced) 30ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R7 no ref'd timer is left behind after a healthy refresh > R7 [plain] three sequential calls leave no extra live timers 48ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R7 no ref'd timer is left behind after a healthy refresh > R7 [chain] three sequential calls leave no extra live timers 16ms
+ × assessment/harness/signer-early-refresh.spec.ts > R8 no stuck lock or stale cache after a timed-out refresh > R8 [plain] timed-out refresh later rejects: next call (STS healthy) uses fresh credentials 3ms
+   → R8 plain call A: getAuthToken() still pending: expected false to be true // Object.is equality
 stdout | assessment/harness/signer-early-refresh.spec.ts
 HARNESS_INFO signer-early-refresh.spec.ts {"I1.fallbackMs.plain":"pending>30000","I1.fallbackMs.chain":"pending>30000","R2.refreshCalls":2,"R4.plainSlowFail":"token signed with CACHED after 4000ms","R4.chainSlowFail":"token signed with CACHED after 4000ms","R4.plainStall":"pending","R5.fail":"token signed with EXPIRED after 0ms","R5.stall":"pending","R7.plain":{"before":1,"after":1,"keys":["FRESH6","FRESH7","FRESH8"]},"R7.chain":{"before":1,"after":1,"keys":["FRESH9","FRESH9","FRESH9"]},"I2.sequentialLatenciesMs":["pending>30000"],"I3.recovery":{"callA":"pending","callB":"pending","refreshCalls":1},"I4.forcedCallsFor10Concurrent":10,"I5.consoleOnFallback":{"outcome":"pending","calls":[]},"I6.pendingFakeTimers":{"outcome":"token signed with FRESH21 after 500ms","timers":0},"I7.refreshCalls":2,"I8.signedWith":"token signed with CACHED after 500ms"}
 
- ✓ assessment/harness/signer-early-refresh.spec.ts > R7 no ref'd timer is left behind after a healthy refresh > R7 [plain] three sequential calls leave no extra live timers 47ms
- ✓ assessment/harness/signer-early-refresh.spec.ts > R7 no ref'd timer is left behind after a healthy refresh > R7 [chain] three sequential calls leave no extra live timers 17ms
- × assessment/harness/signer-early-refresh.spec.ts > R8 no stuck lock or stale cache after a timed-out refresh > R8 [plain] timed-out refresh later rejects: next call (STS healthy) uses fresh credentials 3ms
-   → R8 plain call A: getAuthToken() still pending: expected false to be true // Object.is equality
- × assessment/harness/signer-early-refresh.spec.ts > R8 no stuck lock or stale cache after a timed-out refresh > R8 [chain] timed-out refresh later rejects: next call (STS healthy) uses fresh credentials 3ms
+ × assessment/harness/signer-early-refresh.spec.ts > R8 no stuck lock or stale cache after a timed-out refresh > R8 [chain] timed-out refresh later rejects: next call (STS healthy) uses fresh credentials 4ms
    → R8 chain call A: getAuthToken() still pending: expected false to be true // Object.is equality
- × assessment/harness/signer-early-refresh.spec.ts > R8 no stuck lock or stale cache after a timed-out refresh > R8 [chain] timed-out refresh later succeeds: next call uses those credentials without another refresh 4ms
+ × assessment/harness/signer-early-refresh.spec.ts > R8 no stuck lock or stale cache after a timed-out refresh > R8 [chain] timed-out refresh later succeeds: next call uses those credentials without another refresh 3ms
    → R8 chain call A: getAuthToken() still pending: expected false to be true // Object.is equality
  × assessment/harness/signer-early-refresh.spec.ts > R9 concurrency > R9 [plain] 10 concurrent calls during a stall all get cached tokens within 30 s 3ms
    → R9 plain call 0: getAuthToken() still pending: expected false to be true // Object.is equality
- × assessment/harness/signer-early-refresh.spec.ts > R9 concurrency > R9 [chain] 10 concurrent calls during a stall all get cached tokens within 30 s 4ms
+ × assessment/harness/signer-early-refresh.spec.ts > R9 concurrency > R9 [chain] 10 concurrent calls during a stall all get cached tokens within 30 s 3ms
    → R9 chain call 0: getAuthToken() still pending: expected false to be true // Object.is equality
  ✓ assessment/harness/signer-early-refresh.spec.ts > R9 concurrency > R9 [chain] 10 concurrent calls with a healthy refresh share exactly 1 refresh 3ms
  ✓ assessment/harness/signer-early-refresh.spec.ts > R11 no regressions in the existing early-refresh behaviour > R11 static credential object is used as-is 1ms
@@ -56,17 +56,17 @@ HARNESS_INFO signer-early-refresh.spec.ts {"I1.fallbackMs.plain":"pending>30000"
  ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I4 signer-level coalescing for a non-memoized provider (10 concurrent, healthy) 3ms
  ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I5 is anything logged on fallback? 3ms
  ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I6 fake-timer count after a healthy refresh (includes unref'd timers) 1ms
- ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I7 memoizer: plain call within 5 min while a forced refresh is in flight 0ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I7 memoizer: plain call within 5 min while a forced refresh is in flight 1ms
  ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I8 refresh returns credentials that still expire within 15 min: which set signs? 1ms
- × assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10a 4 min left, 1 call, STS healthy: exactly 1 STS request 229ms
+ × assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10a 4 min left, 1 call, STS healthy: exactly 1 STS request 235ms
    → expected 2 to be 1 // Object.is equality
- × assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10b 4 min left, 10 concurrent calls, STS healthy: exactly 1 STS request 149ms
+ × assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10b 4 min left, 10 concurrent calls, STS healthy: exactly 1 STS request 150ms
    → expected 2 to be 1 // Object.is equality
- × assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10c 4 min left, 5 sequential calls, STS failing: 1 request per call, all tokens from cached credentials 359ms
+ × assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10c 4 min left, 5 sequential calls, STS failing: 1 request per call, all tokens from cached credentials 374ms
    → expected 10 to be 5 // Object.is equality
  ✓ assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10d guard: 10 min left, 1 call, STS healthy: 1 early refresh and its credentials are used 140ms
  ✓ assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10e guard: a forced caller still sees the refresh error when STS fails (4 min left) 33ms
- ✓ assessment/harness/duplicate-refresh.spec.ts > Informational (memoizer unit level) > I7b memoizer: forceRefresh while a passive refresh is in flight: how many link calls? 231ms
+ ✓ assessment/harness/duplicate-refresh.spec.ts > Informational (memoizer unit level) > I7b memoizer: forceRefresh while a passive refresh is in flight: how many link calls? 235ms
 stdout | assessment/harness/duplicate-refresh.spec.ts
 HARNESS_INFO duplicate-refresh.spec.ts {"R10a.stsRequests":2,"R10b.stsRequests":2,"R10c":{"stsRequests":10,"keys":["ASIAFAKE0007","ASIAFAKE0007","ASIAFAKE0007","ASIAFAKE0007","ASIAFAKE0007"]},"R10d":{"stsRequests":1,"signedWith":"ASIAFAKE0009","cachedKey":"ASIAFAKE0008"},"R10e.forcedCallerOutcome":"rejected","I7b.linkCallsAfterWarm":2}
 
@@ -139,14 +139,14 @@ AssertionError: R1 plain: getAuthToken() still pending: expected false to be tru
 - true
 + false
 
- ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:43:63
-     41|
-     42| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
-     43|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
+ ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:45:63
+     43|
+     44| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
+     45|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
        |                                                               ^
-     44|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
-     45|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
- ❯ assessment/harness/signer-early-refresh.spec.ts:54:5
+     46|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
+     47|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
+ ❯ assessment/harness/signer-early-refresh.spec.ts:56:5
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
 
@@ -159,14 +159,14 @@ AssertionError: R1 chain: getAuthToken() still pending: expected false to be tru
 - true
 + false
 
- ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:43:63
-     41|
-     42| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
-     43|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
+ ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:45:63
+     43|
+     44| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
+     45|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
        |                                                               ^
-     44|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
-     45|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
- ❯ assessment/harness/signer-early-refresh.spec.ts:63:5
+     46|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
+     47|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
+ ❯ assessment/harness/signer-early-refresh.spec.ts:65:5
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
 
@@ -179,14 +179,14 @@ AssertionError: R2: getAuthToken() still pending: expected false to be true // O
 - true
 + false
 
- ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:43:63
-     41|
-     42| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
-     43|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
+ ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:45:63
+     43|
+     44| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
+     45|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
        |                                                               ^
-     44|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
-     45|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
- ❯ assessment/harness/signer-early-refresh.spec.ts:74:5
+     46|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
+     47|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
+ ❯ assessment/harness/signer-early-refresh.spec.ts:76:5
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
 
@@ -199,13 +199,13 @@ AssertionError: R4 plain: token signed with CACHED after 4000ms: expected true t
 - false
 + true
 
- ❯ assessment/harness/signer-early-refresh.spec.ts:109:69
-    107|     await advanceUntil(() => t.settled);
-    108|     record("R4.plainSlowFail", describeOutcome(t));
-    109|     expect(signedWithExpired(t), `R4 plain: ${describeOutcome(t)}`).to…
+ ❯ assessment/harness/signer-early-refresh.spec.ts:111:69
+    109|     await advanceUntil(() => t.settled);
+    110|     record("R4.plainSlowFail", describeOutcome(t));
+    111|     expect(signedWithExpired(t), `R4 plain: ${describeOutcome(t)}`).to…
        |                                                                     ^
-    110|   });
-    111|
+    112|   });
+    113|
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
 
@@ -218,13 +218,13 @@ AssertionError: R4 chain: token signed with CACHED after 4000ms: expected true t
 - false
 + true
 
- ❯ assessment/harness/signer-early-refresh.spec.ts:118:69
-    116|     await advanceUntil(() => t.settled);
-    117|     record("R4.chainSlowFail", describeOutcome(t));
-    118|     expect(signedWithExpired(t), `R4 chain: ${describeOutcome(t)}`).to…
+ ❯ assessment/harness/signer-early-refresh.spec.ts:120:69
+    118|     await advanceUntil(() => t.settled);
+    119|     record("R4.chainSlowFail", describeOutcome(t));
+    120|     expect(signedWithExpired(t), `R4 chain: ${describeOutcome(t)}`).to…
        |                                                                     ^
-    119|   });
-    120|
+    121|   });
+    122|
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
 
@@ -237,13 +237,13 @@ AssertionError: R5 fail: token signed with EXPIRED after 0ms: expected true to b
 - false
 + true
 
- ❯ assessment/harness/signer-early-refresh.spec.ts:136:68
-    134|     await advanceUntil(() => t.settled);
-    135|     record("R5.fail", describeOutcome(t));
-    136|     expect(signedWithExpired(t), `R5 fail: ${describeOutcome(t)}`).toB…
+ ❯ assessment/harness/signer-early-refresh.spec.ts:138:68
+    136|     await advanceUntil(() => t.settled);
+    137|     record("R5.fail", describeOutcome(t));
+    138|     expect(signedWithExpired(t), `R5 fail: ${describeOutcome(t)}`).toB…
        |                                                                    ^
-    137|   });
-    138|
+    139|   });
+    140|
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
 
@@ -256,14 +256,14 @@ AssertionError: R8 plain call A: getAuthToken() still pending: expected false to
 - true
 + false
 
- ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:43:63
-     41|
-     42| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
-     43|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
+ ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:45:63
+     43|
+     44| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
+     45|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
        |                                                               ^
-     44|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
-     45|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
- ❯ assessment/harness/signer-early-refresh.spec.ts:229:5
+     46|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
+     47|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
+ ❯ assessment/harness/signer-early-refresh.spec.ts:231:5
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
 
@@ -276,14 +276,14 @@ AssertionError: R8 chain call A: getAuthToken() still pending: expected false to
 - true
 + false
 
- ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:43:63
-     41|
-     42| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
-     43|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
+ ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:45:63
+     43|
+     44| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
+     45|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
        |                                                               ^
-     44|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
-     45|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
- ❯ assessment/harness/signer-early-refresh.spec.ts:243:5
+     46|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
+     47|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
+ ❯ assessment/harness/signer-early-refresh.spec.ts:246:5
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
 
@@ -296,14 +296,14 @@ AssertionError: R8 chain call A: getAuthToken() still pending: expected false to
 - true
 + false
 
- ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:43:63
-     41|
-     42| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
-     43|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
+ ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:45:63
+     43|
+     44| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
+     45|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
        |                                                               ^
-     44|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
-     45|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
- ❯ assessment/harness/signer-early-refresh.spec.ts:257:5
+     46|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
+     47|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
+ ❯ assessment/harness/signer-early-refresh.spec.ts:261:5
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
 
@@ -316,15 +316,15 @@ AssertionError: R9 plain call 0: getAuthToken() still pending: expected false to
 - true
 + false
 
- ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:43:63
-     41|
-     42| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
-     43|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
+ ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:45:63
+     43|
+     44| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
+     45|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
        |                                                               ^
-     44|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
-     45|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
- ❯ assessment/harness/signer-early-refresh.spec.ts:272:26
- ❯ assessment/harness/signer-early-refresh.spec.ts:272:8
+     46|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
+     47|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
+ ❯ assessment/harness/signer-early-refresh.spec.ts:277:26
+ ❯ assessment/harness/signer-early-refresh.spec.ts:277:8
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯
 
@@ -337,22 +337,22 @@ AssertionError: R9 chain call 0: getAuthToken() still pending: expected false to
 - true
 + false
 
- ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:43:63
-     41|
-     42| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
-     43|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
+ ❯ expectTokenFrom assessment/harness/signer-early-refresh.spec.ts:45:63
+     43|
+     44| const expectTokenFrom = (t: { settled: boolean; ok?: boolean; value?: …
+     45|   expect(t.settled, `${label}: getAuthToken() still pending`).toBe(tru…
        |                                                               ^
-     44|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
-     45|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
- ❯ assessment/harness/signer-early-refresh.spec.ts:281:26
- ❯ assessment/harness/signer-early-refresh.spec.ts:281:8
+     46|   expect(t.ok, `${label}: getAuthToken() rejected`).toBe(true);
+     47|   expect(signingKey(t.value), `${label}: wrong signing credentials`).t…
+ ❯ assessment/harness/signer-early-refresh.spec.ts:286:26
+ ❯ assessment/harness/signer-early-refresh.spec.ts:286:8
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/14]⎯
 
 
  Test Files  2 failed (2)
       Tests  14 failed | 26 passed (40)
-   Start at  16:30:24
-   Duration  1.67s (transform 332ms, setup 0ms, import 581ms, tests 1.43s, environment 0ms)
+   Start at  16:40:16
+   Duration  1.70s (transform 325ms, setup 0ms, import 579ms, tests 1.44s, environment 0ms)
 
 JSON report written to D:/ToptalAssessment/aws-sdk-js-v3/assessment/results/baseline/harness.json

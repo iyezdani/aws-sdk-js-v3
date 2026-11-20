@@ -9,17 +9,18 @@ The rubric is applied identically to both outputs. Every scored row is implement
 ## Scoring policy
 
 1. **Black-box first.** The harness drives the real `Signer` (real SigV4 signing) and the real `memoizeChain`. It reads *which credentials signed a token* from the token's `X-Amz-Credential`. It assumes no option names, no specific deadline, no error text and no internal helpers. A design is never marked down for differing from the reference fix. See "Reasonable but different" below.
-2. **Simulated time.** Rows R1–R9 run under Vitest fake timers, with `Date` faked as well. Some timer mechanisms are not driven by fake timers, for example `AbortSignal.timeout()`, `node:timers/promises`, or timers captured before the test installs fakes. If an output uses one of these and a timing row fails, I re-check that row with the real-time reproductions in `phase1/repro/` before scoring it. The row is scored on the real-time result, and the mechanism is noted.
+2. **Simulated time.** Rows R1–R9 run under Vitest fake timers, with `Date` faked as well. Some timer mechanisms are not driven by fake timers, for example `AbortSignal.timeout()`, `node:timers/promises`, or timers captured before the test installs fakes. If an output uses one of these and a timing row fails, I re-check that row with layer 3 (`harness/realtime-check.cjs`: real time, built `dist`, 30 s windows) before scoring it. The row is scored on the real-time result, and the mechanism is noted. The Phase 1 reproduction scripts are not used for scoring: their 3 s observation windows are shorter than reasonable deadlines.
 3. **Fail, N/A and "beyond the prompt".**
    - A row fails only on observed wrong behaviour.
    - R10 measures #8358, which the prompt does not mention. It is scored as **thoroughness** (did the model notice it?), not correctness. However, any *regression* a model introduces in the memoizer counts as a correctness issue (R10e, R11).
-4. **Three test layers per output:**
+4. **Three test layers per output, all run by `harness/run.sh <label>`, which rebuilds the changed packages first:**
    1. The package's existing tests, plus the model's own new tests.
-   2. This harness.
-   3. The Phase 1 reproduction scripts against a rebuilt `dist`.
+   2. This harness (fake timers, against source).
+   3. Real-time checks of R1, R2, R3, R4 and R9 against the rebuilt `dist` (`harness/realtime-check.cjs`).
 
    Layers 1 and 3 are recorded alongside the harness row table.
-5. **Manual review is separate from the tests.** Every issue is logged as *file:line, "input X → wrong result Y", severity*. Vague wording such as "seems fragile" is not used.
+5. **Validation of the harness itself.** At the pin (`results/baseline/`), every row fails or passes as the "At the pin" column predicts. A reference fix (local branch `assessment-reference`, never shown to the models) passes every scored row in all three layers (`results/reference/`).
+6. **Manual review is separate from the tests.** Every issue is logged as *file:line, "input X → wrong result Y", severity*. Vague wording such as "seems fragile" is not used.
 
 ## Scored rows
 
