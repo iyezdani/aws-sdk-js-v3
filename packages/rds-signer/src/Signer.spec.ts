@@ -3,7 +3,7 @@ import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
 import { loadConfig } from "@smithy/core/config";
 import { HttpRequest } from "@smithy/core/protocols";
 import { SignatureV4 } from "@smithy/signature-v4";
-import { beforeAll, beforeEach, describe, expect, test as it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, test as it, vi } from "vitest";
 
 import type { SignerConfig } from "./Signer";
 import { Signer } from "./Signer";
@@ -194,6 +194,151 @@ describe("rds-signer", () => {
       const result = await wrappedProvider();
       expect(provider).toHaveBeenCalledTimes(2);
       expect(result).toEqual(originalCreds);
+    });
+
+    describe("stalled early refresh", () => {
+      const expiringCreds = () => ({
+        accessKeyId: "expiring",
+        secretAccessKey: "secret",
+        expiration: new Date(Date.now() + 10 * 60_000),
+      });
+      const neverResolves = () => new Promise<never>(() => {});
+
+      beforeEach(() => {
+        vi.useFakeTimers();
+      });
+
+      afterEach(() => {
+        vi.useRealTimers();
+      });
+
+      it("should resolve getAuthToken with cached credentials when the refresh never settles", async () => {
+        const originalCreds = expiringCreds();
+        const provider = vi.fn((props?: Record<string, any>) =>
+          props?.forceRefresh ? neverResolves() : Promise.resolve(originalCreds)
+        );
+        // Make presign actually resolve the credentials, as the real SignatureV4 does.
+        mockPresign.mockImplementationOnce(async () => {
+          //@ts-ignore
+          return { credentials: await SignatureV4.mock.calls[0][0].credentials() };
+        });
+        const signer = new Signer({ ...minimalParams, credentials: provider });
+
+        let settled = false;
+        const tokenPromise = signer.getAuthToken().then((token) => {
+          settled = true;
+          return token;
+        });
+
+        await vi.advanceTimersByTimeAsync(4_999);
+        expect(settled).toBe(false);
+        await vi.advanceTimersByTimeAsync(1);
+        await expect(tokenPromise).resolves.toBe("testhost:5432?other=url&parameters=here");
+        expect(await mockPresign.mock.results[0].value).toEqual({ credentials: originalCreds });
+        expect(provider).toHaveBeenCalledTimes(2);
+        expect(vi.getTimerCount()).toBe(0);
+      });
+
+      it("should use refreshed credentials if the refresh completes before the timeout", async () => {
+        const refreshedCreds = {
+          accessKeyId: "refreshed",
+          secretAccessKey: "secret",
+          expiration: new Date(Date.now() + 60 * 60_000),
+        };
+        const provider = vi.fn((props?: Record<string, any>) =>
+          props?.forceRefresh
+            ? new Promise((resolve) => setTimeout(resolve, 1_000, refreshedCreds))
+            : Promise.resolve(expiringCreds())
+        );
+        const signer = new Signer({ ...minimalParams, credentials: provider });
+        await signer.getAuthToken();
+        //@ts-ignore
+        const resultPromise = SignatureV4.mock.calls[0][0].credentials();
+        await vi.advanceTimersByTimeAsync(1_000);
+        await expect(resultPromise).resolves.toEqual(refreshedCreds);
+        expect(vi.getTimerCount()).toBe(0);
+      });
+
+      it("should not wait longer than the remaining validity of the cached credentials", async () => {
+        const originalCreds = {
+          accessKeyId: "expiring",
+          secretAccessKey: "secret",
+          expiration: new Date(Date.now() + 2_000),
+        };
+        const provider = vi.fn((props?: Record<string, any>) =>
+          props?.forceRefresh ? neverResolves() : Promise.resolve(originalCreds)
+        );
+        const signer = new Signer({ ...minimalParams, credentials: provider });
+        await signer.getAuthToken();
+        //@ts-ignore
+        const resultPromise = SignatureV4.mock.calls[0][0].credentials();
+        await vi.advanceTimersByTimeAsync(2_000);
+        await expect(resultPromise).resolves.toEqual(originalCreds);
+      });
+
+      it("should reuse an in-flight refresh instead of starting a new one", async () => {
+        const provider = vi.fn((props?: Record<string, any>) =>
+          props?.forceRefresh ? neverResolves() : Promise.resolve(expiringCreds())
+        );
+        const signer = new Signer({ ...minimalParams, credentials: provider });
+        await signer.getAuthToken();
+        //@ts-ignore
+        const wrappedProvider = SignatureV4.mock.calls[0][0].credentials;
+
+        const first = wrappedProvider();
+        await vi.advanceTimersByTimeAsync(5_000);
+        await first;
+        const second = wrappedProvider();
+        await vi.advanceTimersByTimeAsync(5_000);
+        await second;
+
+        const forceRefreshCalls = provider.mock.calls.filter(([props]) => props?.forceRefresh);
+        expect(forceRefreshCalls).toHaveLength(1);
+      });
+
+      it("should start a new refresh after a previous one fails", async () => {
+        const refreshedCreds = {
+          accessKeyId: "refreshed",
+          secretAccessKey: "secret",
+          expiration: new Date(Date.now() + 60 * 60_000),
+        };
+        const provider = vi
+          .fn()
+          .mockResolvedValueOnce(expiringCreds())
+          .mockRejectedValueOnce(new Error("refresh failed"))
+          .mockResolvedValueOnce(expiringCreds())
+          .mockResolvedValueOnce(refreshedCreds);
+        const signer = new Signer({ ...minimalParams, credentials: provider });
+        await signer.getAuthToken();
+        //@ts-ignore
+        const wrappedProvider = SignatureV4.mock.calls[0][0].credentials;
+        expect((await wrappedProvider()).accessKeyId).toBe("expiring");
+        await expect(wrappedProvider()).resolves.toEqual(refreshedCreds);
+        expect(provider).toHaveBeenCalledTimes(4);
+      });
+
+      it("should wait for the refresh when cached credentials are already expired", async () => {
+        const refreshedCreds = {
+          accessKeyId: "refreshed",
+          secretAccessKey: "secret",
+          expiration: new Date(Date.now() + 60 * 60_000),
+        };
+        const provider = vi.fn((props?: Record<string, any>) =>
+          props?.forceRefresh
+            ? new Promise((resolve) => setTimeout(resolve, 30_000, refreshedCreds))
+            : Promise.resolve({
+                accessKeyId: "expired",
+                secretAccessKey: "secret",
+                expiration: new Date(Date.now() - 1),
+              })
+        );
+        const signer = new Signer({ ...minimalParams, credentials: provider });
+        await signer.getAuthToken();
+        //@ts-ignore
+        const resultPromise = SignatureV4.mock.calls[0][0].credentials();
+        await vi.advanceTimersByTimeAsync(30_000);
+        await expect(resultPromise).resolves.toEqual(refreshedCreds);
+      });
     });
 
     it("should not wrap static credential objects", async () => {

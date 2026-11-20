@@ -54,6 +54,12 @@ export interface SignerConfig {
 const MINUTE_MS = 60_000;
 
 /**
+ * Upper bound on how long an early (proactive) credential refresh may delay
+ * token generation while the currently cached credentials are still valid.
+ */
+const EARLY_REFRESH_TIMEOUT_MS = 5_000;
+
+/**
  * The signer class that generates an auth token to a database.
  */
 export class Signer {
@@ -113,17 +119,62 @@ export class Signer {
    * Wraps a credential provider to force refresh when the resolved credentials
    * expire within 15 minutes. A presigned URL cannot outlive the credentials
    * used to sign it, so near-expiry credentials would produce a short-lived token.
+   *
+   * The early refresh is best-effort: while the cached credentials are still
+   * valid, it may delay token generation by at most EARLY_REFRESH_TIMEOUT_MS.
+   * If it stalls (e.g. an STS request that is accepted but never answered), the
+   * cached credentials are used instead. A refresh that is still in flight is
+   * shared by later calls rather than started again, so stalled requests do not
+   * pile up.
    */
   private createCredentialsWrapper(provider: AwsCredentialIdentityProvider): AwsCredentialIdentityProvider {
+    let pendingRefresh: Promise<AwsCredentialIdentity | undefined> | undefined;
+
+    const refresh = (identityProperties?: Record<string, any>): Promise<AwsCredentialIdentity | undefined> => {
+      if (!pendingRefresh) {
+        const attempt: Promise<AwsCredentialIdentity | undefined> = Promise.resolve()
+          .then(() => provider({ ...identityProperties, forceRefresh: true }))
+          // A failed refresh is never fatal; it falls back to the cached credentials.
+          .catch(() => undefined)
+          .finally(() => {
+            if (pendingRefresh === attempt) {
+              pendingRefresh = undefined;
+            }
+          });
+        pendingRefresh = attempt;
+      }
+      return pendingRefresh;
+    };
+
     return async (identityProperties?: Record<string, any>) => {
       const credentials = await provider(identityProperties);
-      if (credentials.expiration && credentials.expiration.getTime() - Date.now() < 15 * MINUTE_MS) {
+      if (!credentials.expiration) {
+        return credentials;
+      }
+      const remainingMs = credentials.expiration.getTime() - Date.now();
+      if (remainingMs >= 15 * MINUTE_MS) {
+        return credentials;
+      }
+
+      let refreshed: AwsCredentialIdentity | undefined;
+      if (remainingMs > 0) {
+        // The cached credentials are still usable, so do not wait indefinitely for the refresh.
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const timeout = new Promise<undefined>((resolve) => {
+          timer = setTimeout(resolve, Math.min(EARLY_REFRESH_TIMEOUT_MS, remainingMs), undefined);
+        });
         try {
-          const refreshed = await provider({ ...identityProperties, forceRefresh: true });
-          if (!refreshed.expiration || refreshed.expiration.getTime() - Date.now() >= 15 * MINUTE_MS) {
-            return refreshed;
-          }
-        } catch {}
+          refreshed = await Promise.race([refresh(identityProperties), timeout]);
+        } finally {
+          clearTimeout(timer);
+        }
+      } else {
+        // The cached credentials are already expired; only a refresh can produce usable ones.
+        refreshed = await refresh(identityProperties);
+      }
+
+      if (refreshed && (!refreshed.expiration || refreshed.expiration.getTime() - Date.now() >= 15 * MINUTE_MS)) {
+        return refreshed;
       }
       return credentials;
     };
