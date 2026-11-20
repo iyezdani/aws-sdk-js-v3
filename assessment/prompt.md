@@ -1,6 +1,8 @@
 # Prompt (sent verbatim, identically, to both models)
 
-Status: **DRAFT, awaiting sign-off.** Once frozen, do not edit; the text between the lines is what gets pasted.
+Status: **FROZEN 2026-11-19** (tag `assessment-frozen`). Do not edit; the text between the lines is what gets sent.
+
+Models: Claude Opus 5.5 (`claude-opus-5-5`), medium effort; Claude Sonnet 5.5 (`claude-sonnet-5-5`), medium effort.
 
 ---
 
