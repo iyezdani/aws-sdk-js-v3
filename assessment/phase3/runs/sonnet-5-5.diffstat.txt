@@ -1,0 +1,3 @@
+ packages/rds-signer/src/Signer.spec.ts | 53 ++++++++++++++++++++++++++++++++++
+ packages/rds-signer/src/Signer.ts      | 17 +++++++++--
+ 2 files changed, 68 insertions(+), 2 deletions(-)

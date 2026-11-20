@@ -1,0 +1,251 @@
+diff --git a/packages/rds-signer/src/Signer.spec.ts b/packages/rds-signer/src/Signer.spec.ts
+index d70c2ffea0a..8d7829cf3bb 100644
+--- a/packages/rds-signer/src/Signer.spec.ts
++++ b/packages/rds-signer/src/Signer.spec.ts
+@@ -3,7 +3,7 @@ import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
+ import { loadConfig } from "@smithy/core/config";
+ import { HttpRequest } from "@smithy/core/protocols";
+ import { SignatureV4 } from "@smithy/signature-v4";
+-import { beforeAll, beforeEach, describe, expect, test as it, vi } from "vitest";
++import { afterEach, beforeAll, beforeEach, describe, expect, test as it, vi } from "vitest";
+ 
+ import type { SignerConfig } from "./Signer";
+ import { Signer } from "./Signer";
+@@ -196,6 +196,151 @@ describe("rds-signer", () => {
+       expect(result).toEqual(originalCreds);
+     });
+ 
++    describe("stalled early refresh", () => {
++      const expiringCreds = () => ({
++        accessKeyId: "expiring",
++        secretAccessKey: "secret",
++        expiration: new Date(Date.now() + 10 * 60_000),
++      });
++      const neverResolves = () => new Promise<never>(() => {});
++
++      beforeEach(() => {
++        vi.useFakeTimers();
++      });
++
++      afterEach(() => {
++        vi.useRealTimers();
++      });
++
++      it("should resolve getAuthToken with cached credentials when the refresh never settles", async () => {
++        const originalCreds = expiringCreds();
++        const provider = vi.fn((props?: Record<string, any>) =>
++          props?.forceRefresh ? neverResolves() : Promise.resolve(originalCreds)
++        );
++        // Make presign actually resolve the credentials, as the real SignatureV4 does.
++        mockPresign.mockImplementationOnce(async () => {
++          //@ts-ignore
++          return { credentials: await SignatureV4.mock.calls[0][0].credentials() };
++        });
++        const signer = new Signer({ ...minimalParams, credentials: provider });
++
++        let settled = false;
++        const tokenPromise = signer.getAuthToken().then((token) => {
++          settled = true;
++          return token;
++        });
++
++        await vi.advanceTimersByTimeAsync(4_999);
++        expect(settled).toBe(false);
++        await vi.advanceTimersByTimeAsync(1);
++        await expect(tokenPromise).resolves.toBe("testhost:5432?other=url&parameters=here");
++        expect(await mockPresign.mock.results[0].value).toEqual({ credentials: originalCreds });
++        expect(provider).toHaveBeenCalledTimes(2);
++        expect(vi.getTimerCount()).toBe(0);
++      });
++
++      it("should use refreshed credentials if the refresh completes before the timeout", async () => {
++        const refreshedCreds = {
++          accessKeyId: "refreshed",
++          secretAccessKey: "secret",
++          expiration: new Date(Date.now() + 60 * 60_000),
++        };
++        const provider = vi.fn((props?: Record<string, any>) =>
++          props?.forceRefresh
++            ? new Promise((resolve) => setTimeout(resolve, 1_000, refreshedCreds))
++            : Promise.resolve(expiringCreds())
++        );
++        const signer = new Signer({ ...minimalParams, credentials: provider });
++        await signer.getAuthToken();
++        //@ts-ignore
++        const resultPromise = SignatureV4.mock.calls[0][0].credentials();
++        await vi.advanceTimersByTimeAsync(1_000);
++        await expect(resultPromise).resolves.toEqual(refreshedCreds);
++        expect(vi.getTimerCount()).toBe(0);
++      });
++
++      it("should not wait longer than the remaining validity of the cached credentials", async () => {
++        const originalCreds = {
++          accessKeyId: "expiring",
++          secretAccessKey: "secret",
++          expiration: new Date(Date.now() + 2_000),
++        };
++        const provider = vi.fn((props?: Record<string, any>) =>
++          props?.forceRefresh ? neverResolves() : Promise.resolve(originalCreds)
++        );
++        const signer = new Signer({ ...minimalParams, credentials: provider });
++        await signer.getAuthToken();
++        //@ts-ignore
++        const resultPromise = SignatureV4.mock.calls[0][0].credentials();
++        await vi.advanceTimersByTimeAsync(2_000);
++        await expect(resultPromise).resolves.toEqual(originalCreds);
++      });
++
++      it("should reuse an in-flight refresh instead of starting a new one", async () => {
++        const provider = vi.fn((props?: Record<string, any>) =>
++          props?.forceRefresh ? neverResolves() : Promise.resolve(expiringCreds())
++        );
++        const signer = new Signer({ ...minimalParams, credentials: provider });
++        await signer.getAuthToken();
++        //@ts-ignore
++        const wrappedProvider = SignatureV4.mock.calls[0][0].credentials;
++
++        const first = wrappedProvider();
++        await vi.advanceTimersByTimeAsync(5_000);
++        await first;
++        const second = wrappedProvider();
++        await vi.advanceTimersByTimeAsync(5_000);
++        await second;
++
++        const forceRefreshCalls = provider.mock.calls.filter(([props]) => props?.forceRefresh);
++        expect(forceRefreshCalls).toHaveLength(1);
++      });
++
++      it("should start a new refresh after a previous one fails", async () => {
++        const refreshedCreds = {
++          accessKeyId: "refreshed",
++          secretAccessKey: "secret",
++          expiration: new Date(Date.now() + 60 * 60_000),
++        };
++        const provider = vi
++          .fn()
++          .mockResolvedValueOnce(expiringCreds())
++          .mockRejectedValueOnce(new Error("refresh failed"))
++          .mockResolvedValueOnce(expiringCreds())
++          .mockResolvedValueOnce(refreshedCreds);
++        const signer = new Signer({ ...minimalParams, credentials: provider });
++        await signer.getAuthToken();
++        //@ts-ignore
++        const wrappedProvider = SignatureV4.mock.calls[0][0].credentials;
++        expect((await wrappedProvider()).accessKeyId).toBe("expiring");
++        await expect(wrappedProvider()).resolves.toEqual(refreshedCreds);
++        expect(provider).toHaveBeenCalledTimes(4);
++      });
++
++      it("should wait for the refresh when cached credentials are already expired", async () => {
++        const refreshedCreds = {
++          accessKeyId: "refreshed",
++          secretAccessKey: "secret",
++          expiration: new Date(Date.now() + 60 * 60_000),
++        };
++        const provider = vi.fn((props?: Record<string, any>) =>
++          props?.forceRefresh
++            ? new Promise((resolve) => setTimeout(resolve, 30_000, refreshedCreds))
++            : Promise.resolve({
++                accessKeyId: "expired",
++                secretAccessKey: "secret",
++                expiration: new Date(Date.now() - 1),
++              })
++        );
++        const signer = new Signer({ ...minimalParams, credentials: provider });
++        await signer.getAuthToken();
++        //@ts-ignore
++        const resultPromise = SignatureV4.mock.calls[0][0].credentials();
++        await vi.advanceTimersByTimeAsync(30_000);
++        await expect(resultPromise).resolves.toEqual(refreshedCreds);
++      });
++    });
++
+     it("should not wrap static credential objects", async () => {
+       const staticCreds = {
+         accessKeyId: "static",
+diff --git a/packages/rds-signer/src/Signer.ts b/packages/rds-signer/src/Signer.ts
+index 29df85a06c2..8ee2bfd2d81 100644
+--- a/packages/rds-signer/src/Signer.ts
++++ b/packages/rds-signer/src/Signer.ts
+@@ -53,6 +53,12 @@ export interface SignerConfig {
+ 
+ const MINUTE_MS = 60_000;
+ 
++/**
++ * Upper bound on how long an early (proactive) credential refresh may delay
++ * token generation while the currently cached credentials are still valid.
++ */
++const EARLY_REFRESH_TIMEOUT_MS = 5_000;
++
+ /**
+  * The signer class that generates an auth token to a database.
+  */
+@@ -113,17 +119,62 @@ export class Signer {
+    * Wraps a credential provider to force refresh when the resolved credentials
+    * expire within 15 minutes. A presigned URL cannot outlive the credentials
+    * used to sign it, so near-expiry credentials would produce a short-lived token.
++   *
++   * The early refresh is best-effort: while the cached credentials are still
++   * valid, it may delay token generation by at most EARLY_REFRESH_TIMEOUT_MS.
++   * If it stalls (e.g. an STS request that is accepted but never answered), the
++   * cached credentials are used instead. A refresh that is still in flight is
++   * shared by later calls rather than started again, so stalled requests do not
++   * pile up.
+    */
+   private createCredentialsWrapper(provider: AwsCredentialIdentityProvider): AwsCredentialIdentityProvider {
++    let pendingRefresh: Promise<AwsCredentialIdentity | undefined> | undefined;
++
++    const refresh = (identityProperties?: Record<string, any>): Promise<AwsCredentialIdentity | undefined> => {
++      if (!pendingRefresh) {
++        const attempt: Promise<AwsCredentialIdentity | undefined> = Promise.resolve()
++          .then(() => provider({ ...identityProperties, forceRefresh: true }))
++          // A failed refresh is never fatal; it falls back to the cached credentials.
++          .catch(() => undefined)
++          .finally(() => {
++            if (pendingRefresh === attempt) {
++              pendingRefresh = undefined;
++            }
++          });
++        pendingRefresh = attempt;
++      }
++      return pendingRefresh;
++    };
++
+     return async (identityProperties?: Record<string, any>) => {
+       const credentials = await provider(identityProperties);
+-      if (credentials.expiration && credentials.expiration.getTime() - Date.now() < 15 * MINUTE_MS) {
++      if (!credentials.expiration) {
++        return credentials;
++      }
++      const remainingMs = credentials.expiration.getTime() - Date.now();
++      if (remainingMs >= 15 * MINUTE_MS) {
++        return credentials;
++      }
++
++      let refreshed: AwsCredentialIdentity | undefined;
++      if (remainingMs > 0) {
++        // The cached credentials are still usable, so do not wait indefinitely for the refresh.
++        let timer: ReturnType<typeof setTimeout> | undefined;
++        const timeout = new Promise<undefined>((resolve) => {
++          timer = setTimeout(resolve, Math.min(EARLY_REFRESH_TIMEOUT_MS, remainingMs), undefined);
++        });
+         try {
+-          const refreshed = await provider({ ...identityProperties, forceRefresh: true });
+-          if (!refreshed.expiration || refreshed.expiration.getTime() - Date.now() >= 15 * MINUTE_MS) {
+-            return refreshed;
+-          }
+-        } catch {}
++          refreshed = await Promise.race([refresh(identityProperties), timeout]);
++        } finally {
++          clearTimeout(timer);
++        }
++      } else {
++        // The cached credentials are already expired; only a refresh can produce usable ones.
++        refreshed = await refresh(identityProperties);
++      }
++
++      if (refreshed && (!refreshed.expiration || refreshed.expiration.getTime() - Date.now() >= 15 * MINUTE_MS)) {
++        return refreshed;
+       }
+       return credentials;
+     };

@@ -1,0 +1,12 @@
+label:    sonnet-5-5
+model:    claude-sonnet-5-5
+effort:   medium
+cli:      2.1.329 (Claude Code)
+cwd:      D:/src/b/aws-sdk-js-v3
+head:     b90fc58acae6212a5eefcc92ddfbaf1117ba08e9
+dirty:    0 files before run
+prompt:   sha256 7fc3ee693ad9d8da79a39c626f686424a50846f117671c489a24403746dd46bc, 94 words, sent on stdin
+command:  claude -p --model claude-sonnet-5-5 --effort medium --permission-mode auto --setting-sources project,local --strict-mcp-config --mcp-config C:\Users\imady\ToptalArtifacts\phase3\empty-mcp.json --disallowedTools WebSearch --output-format stream-json --verbose < prompt.txt
+start:    2026-11-20T01:01:39Z
+end:      2026-11-20T01:02:16Z
+exit:     0

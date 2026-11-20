@@ -1,0 +1,2 @@
+ M packages/rds-signer/src/Signer.spec.ts
+ M packages/rds-signer/src/Signer.ts
