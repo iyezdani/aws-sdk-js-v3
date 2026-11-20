@@ -1,0 +1,3 @@
+{"scenario":"one token request","stsRequests":1,"tokenErrors":0}
+{"scenario":"ten concurrent token requests","stsRequests":1,"tokenErrors":0}
+{"scenario":"five sequential token requests, STS failing","stsRequests":5,"tokenErrors":0}

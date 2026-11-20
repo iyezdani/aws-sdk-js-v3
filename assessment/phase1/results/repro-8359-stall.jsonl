@@ -1,0 +1,5 @@
+{"resolved":{"@aws-sdk/rds-signer":{"version":"3.1173.0","path":"d:\\ToptalAssessment\\aws-sdk-js-v3\\packages\\rds-signer"},"@aws-sdk/credential-providers":{"version":"3.1173.0","path":"d:\\ToptalAssessment\\aws-sdk-js-v3\\packages\\credential-providers"},"@aws-sdk/credential-provider-node":{"version":"3.972.97","path":"d:\\ToptalAssessment\\aws-sdk-js-v3\\packages-internal\\credential-provider-node"}},"node":"v20.20.0"}
+{"phase":"A: 10 min left, STS stalls","callA":"pending","stsRequests":1,"cachedValidForMin":9.9,"plainProviderCall":"returned ASIAFAKE0001 in 0ms (same as cached: true)"}
+{"phase":"B: STS healthy again, new call","callA":"pending","callB":"pending","stsRequests":1,"note":"callB sent no STS request; it is awaiting the stalled forceRefreshLock"}
+{"phase":"C: stalled socket destroyed","callA":"resolved after 6019ms","callB":"resolved after 3017ms","resolvedWithinMsOfDestroy":502,"signedWith":["ASIAFAKE0001","ASIAFAKE0001"],"cachedKey":"ASIAFAKE0001"}
+{"phase":"D: 4 min left, STS stalls","call":"pending","stsRequests":2,"note":"passive (memoizer) + forced (signer) refresh both stalled"}

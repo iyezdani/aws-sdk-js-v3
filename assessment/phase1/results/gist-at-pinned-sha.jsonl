@@ -1,0 +1,7 @@
+{"scenario":"one token request","stsRequests":2,"tokenErrors":0}
+{"scenario":"ten concurrent token requests","stsRequests":2,"tokenErrors":0}
+{"scenario":"five sequential token requests, STS failing","stsRequests":10,"tokenErrors":0}
+{"mode":"hang","outcome":"still pending after 3000ms","observedMs":3068,"stsRequests":1,"cachedCredentialsStillValid":true,"warningsAndErrors":[]}
+{"mode":"fail","outcome":"token issued","observedMs":64,"stsRequests":2,"cachedCredentialsStillValid":true,"warningsAndErrors":[]}
+{"mode":"timeout-warn","outcome":"still pending after 3000ms","observedMs":3074,"stsRequests":1,"cachedCredentialsStillValid":true,"warningsAndErrors":[{"level":"warn","message":"@smithy/node-http-handler - [WARN] a request has exceeded the configured 100 ms requestTimeout. Init client requestHandler with throwOnRequestTimeout=true to turn this into an error."}]}
+{"mode":"timeout-throw","outcome":"token issued","observedMs":177,"stsRequests":1,"cachedCredentialsStillValid":true,"warningsAndErrors":[{"level":"error","message":"[object Object]"}]}

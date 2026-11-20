@@ -1,0 +1,10 @@
+{"resolved":{"@aws-sdk/rds-signer":{"version":"3.1173.0","path":"d:\\ToptalAssessment\\aws-sdk-js-v3\\packages\\rds-signer"},"@aws-sdk/credential-providers":{"version":"3.1173.0","path":"d:\\ToptalAssessment\\aws-sdk-js-v3\\packages\\credential-providers"},"@aws-sdk/credential-provider-node":{"version":"3.972.97","path":"d:\\ToptalAssessment\\aws-sdk-js-v3\\packages-internal\\credential-provider-node"}},"node":"v20.20.0"}
+{"remainingMin":20,"scenario":"1 call","stsRequests":0,"perCall":0,"tokenErrors":0,"signedWith":["ASIAFAKE0001 (cached)"]}
+{"remainingMin":20,"scenario":"10 concurrent calls","stsRequests":0,"perCall":0,"tokenErrors":0,"signedWith":["ASIAFAKE0002 (cached)"]}
+{"remainingMin":20,"scenario":"5 sequential calls, STS failing","stsRequests":0,"perCall":0,"tokenErrors":0,"signedWith":["ASIAFAKE0003 (cached)"]}
+{"remainingMin":10,"scenario":"1 call","stsRequests":1,"perCall":1,"tokenErrors":0,"signedWith":["ASIAFAKE0005 (refreshed)"]}
+{"remainingMin":10,"scenario":"10 concurrent calls","stsRequests":1,"perCall":0.1,"tokenErrors":0,"signedWith":["ASIAFAKE0007 (refreshed)"]}
+{"remainingMin":10,"scenario":"5 sequential calls, STS failing","stsRequests":5,"perCall":1,"tokenErrors":0,"signedWith":["ASIAFAKE0008 (cached)"]}
+{"remainingMin":4,"scenario":"1 call","stsRequests":2,"perCall":2,"tokenErrors":0,"signedWith":["ASIAFAKE0011 (refreshed)"]}
+{"remainingMin":4,"scenario":"10 concurrent calls","stsRequests":2,"perCall":0.2,"tokenErrors":0,"signedWith":["ASIAFAKE0014 (refreshed)"]}
+{"remainingMin":4,"scenario":"5 sequential calls, STS failing","stsRequests":10,"perCall":2,"tokenErrors":0,"signedWith":["ASIAFAKE0015 (cached)"]}

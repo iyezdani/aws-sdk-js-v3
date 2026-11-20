@@ -1,0 +1,9 @@
+
+ RUN  v4.1.9 D:/ToptalAssessment/aws-sdk-js-v3/packages/rds-signer
+
+
+ Test Files  3 passed (3)
+      Tests  14 passed (14)
+   Start at  16:30:17
+   Duration  475ms (transform 355ms, setup 0ms, import 596ms, tests 28ms, environment 0ms)
+

@@ -1,0 +1,3 @@
+@aws-sdk/rds-signer -> d:\ToptalAssessment\aws-sdk-js-v3\packages\rds-signer\dist-cjs\index.js
+@aws-sdk/credential-providers -> d:\ToptalAssessment\aws-sdk-js-v3\packages\credential-providers\dist-cjs\index.js
+@aws-sdk/credential-provider-node -> d:\ToptalAssessment\aws-sdk-js-v3\packages-internal\credential-provider-node\dist-cjs\index.js
