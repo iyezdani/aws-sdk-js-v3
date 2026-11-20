@@ -1,0 +1,6 @@
+{"resolved":{"@aws-sdk/rds-signer":{"version":"3.1173.0","path":"d:\\ToptalAssessment\\aws-sdk-js-v3\\packages\\rds-signer"},"@aws-sdk/credential-providers":{"version":"3.1173.0","path":"d:\\ToptalAssessment\\aws-sdk-js-v3\\packages\\credential-providers"},"@aws-sdk/credential-provider-node":{"version":"3.972.97","path":"d:\\ToptalAssessment\\aws-sdk-js-v3\\packages-internal\\credential-provider-node"}},"node":"v20.20.0"}
+{"row":"R1","case":"10 min left, STS stalls","state":"token","ms":5007,"key":"ASIAFAKE0001","expiredAtReturn":false,"pass":true}
+{"row":"R2","case":"4 min left, STS stalls","state":"token","ms":5014,"key":"ASIAFAKE0002","expiredAtReturn":false,"pass":true}
+{"row":"R3","case":"10 min left, STS answers after 500 ms","state":"token","ms":515,"key":"ASIAFAKE0004","expiredAtReturn":false,"pass":true}
+{"row":"R4","case":"3 s left, STS fails after 4 s","state":"rejected","ms":4014,"error":"@aws-sdk/rds-signer - cached credentials expired before a refresh completed.","pass":true}
+{"row":"R9","case":"10 concurrent, 10 min left, STS stalls","states":["token@5012","token@5013","token@5013","token@5013","token@5014","token@5014","token@5014","token@5014","token@5015","token@5015"],"pass":true}

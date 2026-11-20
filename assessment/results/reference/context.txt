@@ -1,0 +1,8 @@
+label:  reference
+date:   2026-11-20T00:37:06Z
+head:   3e21676cc0979e4f04a1dc4c115cb6642ae839d0 (assessment-reference)
+node:   v20.20.0
+changes vs pin, outside assessment/:
+ .../src/runtime/memoize-chain.ts                   | 14 +++-
+ packages/rds-signer/src/Signer.ts                  | 88 ++++++++++++++++++++--
+ 2 files changed, 91 insertions(+), 11 deletions(-)

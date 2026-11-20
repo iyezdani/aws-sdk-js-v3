@@ -3,6 +3,7 @@
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
+  advance,
   advanceUntil,
   BOUND_MS,
   captureUnhandled,
@@ -24,6 +25,7 @@ import {
   signerFor,
   signingKey,
   stall,
+  STEP_MS,
   T0,
   track,
 } from "./helpers";
@@ -228,6 +230,7 @@ describe("R8 no stuck lock or stale cache after a timed-out refresh", () => {
     await advanceUntil(() => a.settled);
     expectTokenFrom(a, "CACHED", "R8 plain call A");
     ctl.reject(new Error("late refresh failure"));
+    await advance(STEP_MS); // "later": the failure has propagated before the next call arrives
     const b = track(signer.getAuthToken());
     await advanceUntil(() => b.settled);
     expectTokenFrom(b, "FRESH", "R8 plain call B");
@@ -242,6 +245,7 @@ describe("R8 no stuck lock or stale cache after a timed-out refresh", () => {
     await advanceUntil(() => a.settled);
     expectTokenFrom(a, "CACHED", "R8 chain call A");
     ctl.reject(new Error("late refresh failure"));
+    await advance(STEP_MS); // "later": the failure has propagated before the next call arrives
     const b = track(signer.getAuthToken());
     await advanceUntil(() => b.settled);
     expectTokenFrom(b, "FRESH", "R8 chain call B");
@@ -256,6 +260,7 @@ describe("R8 no stuck lock or stale cache after a timed-out refresh", () => {
     await advanceUntil(() => a.settled);
     expectTokenFrom(a, "CACHED", "R8 chain call A");
     ctl.resolve(creds("LATE", 60 * MIN));
+    await advance(STEP_MS); // "later": the success has propagated before the next call arrives
     const b = track(signer.getAuthToken());
     await advanceUntil(() => b.settled);
     expectTokenFrom(b, "LATE", "R8 chain call B");

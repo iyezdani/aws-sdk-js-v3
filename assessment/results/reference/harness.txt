@@ -1,0 +1,65 @@
+
+ RUN  v4.1.9 D:/ToptalAssessment/aws-sdk-js-v3
+
+(node:13384) Warning: NodeVersionSupportWarning: The AWS SDK for JavaScript (v3)
+versions published after the first week of January 2027
+will require node >=22. You are running node v20.20.0.
+
+To continue receiving updates to AWS services, bug fixes,
+and security updates please upgrade to node >=22.
+
+More information can be found at: https://a.co/c895JFp
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R1 bounded wait: 10 min left, forced refresh stalls > R1 [plain] token is signed with the cached credentials within 30 s 11ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R1 bounded wait: 10 min left, forced refresh stalls > R1 [chain] token is signed with the cached credentials within 30 s 4ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R2 bounded wait inside the memoizer's passive window > R2 [chain] 4 min left, passive and forced refresh both stall: cached token within 30 s 2ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R3 a healthy early refresh still wins > R3 [plain] 10 min left, refresh completes after 500 ms: signed with refreshed credentials 2ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R3 a healthy early refresh still wins > R3 [chain] 10 min left, refresh completes after 500 ms: signed with refreshed credentials 2ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R3 a healthy early refresh still wins > R3 [chain] 4 min left, refresh completes after 500 ms: signed with refreshed credentials 2ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R4 expiry is re-checked at fallback (credentials expire during the wait) > R4 [plain] 2 s left, refresh fails after 4 s: never a token signed with expired credentials 2ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R4 expiry is re-checked at fallback (credentials expire during the wait) > R4 [chain] 2 s left, refresh fails after 4 s: never a token signed with expired credentials 1ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R4 expiry is re-checked at fallback (credentials expire during the wait) > R4 [plain] 2 s left, refresh stalls: never a token signed with expired credentials 2ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R5 already-expired credentials > R5 [plain] expired 1 min ago, refresh fails: never signed with the expired credentials 1ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R5 already-expired credentials > R5 [plain] expired 1 min ago, refresh stalls: never signed with the expired credentials 4ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R5 already-expired credentials > R5 [plain] expired 1 min ago, refresh succeeds after 500 ms: signed with the refreshed credentials 1ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R6 an abandoned refresh that later rejects raises no unhandled rejection > R6 [plain] 10 min left 33ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R6 an abandoned refresh that later rejects raises no unhandled rejection > R6 [chain] 10 min left 29ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R6 an abandoned refresh that later rejects raises no unhandled rejection > R6 [chain] 4 min left (passive + forced) 31ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R7 no ref'd timer is left behind after a healthy refresh > R7 [plain] three sequential calls leave no extra live timers 46ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R7 no ref'd timer is left behind after a healthy refresh > R7 [chain] three sequential calls leave no extra live timers 16ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R8 no stuck lock or stale cache after a timed-out refresh > R8 [plain] timed-out refresh later rejects: next call (STS healthy) uses fresh credentials 3ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R8 no stuck lock or stale cache after a timed-out refresh > R8 [chain] timed-out refresh later rejects: next call (STS healthy) uses fresh credentials 3ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R8 no stuck lock or stale cache after a timed-out refresh > R8 [chain] timed-out refresh later succeeds: next call uses those credentials without another refresh 2ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R9 concurrency > R9 [plain] 10 concurrent calls during a stall all get cached tokens within 30 s 4ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R9 concurrency > R9 [chain] 10 concurrent calls during a stall all get cached tokens within 30 s 4ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R9 concurrency > R9 [chain] 10 concurrent calls with a healthy refresh share exactly 1 refresh 3ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R11 no regressions in the existing early-refresh behaviour > R11 static credential object is used as-is 1ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R11 no regressions in the existing early-refresh behaviour > R11 [plain] credentials without expiration: no forced refresh 1ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R11 no regressions in the existing early-refresh behaviour > R11 [plain] 20 min left: no forced refresh 1ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > R11 no regressions in the existing early-refresh behaviour > R11 [chain] 20 min left: no refresh at all 1ms
+stdout | assessment/harness/signer-early-refresh.spec.ts
+HARNESS_INFO signer-early-refresh.spec.ts {"I1.fallbackMs.plain":5000,"I1.fallbackMs.chain":5000,"R2.refreshCalls":1,"R4.plainSlowFail":"rejected after 4000ms: @aws-sdk/rds-signer - cached credentials expired before a refresh completed.","R4.chainSlowFail":"rejected after 4000ms: @aws-sdk/rds-signer - cached credentials expired before a refresh completed.","R4.plainStall":"rejected after 5000ms: @aws-sdk/rds-signer - cached credentials expired before a refresh completed.","R5.fail":"rejected after 0ms: synthetic refresh failure","R5.stall":"pending","R7.plain":{"before":1,"after":1,"keys":["FRESH5","FRESH6","FRESH7"]},"R7.chain":{"before":1,"after":1,"keys":["FRESH8","FRESH8","FRESH8"]},"I2.sequentialLatenciesMs":[5000,0,0,0,0],"I3.recovery":{"callA":"token signed with CACHED after 5000ms","callB":"token signed with CACHED after 0ms","refreshCalls":1},"I4.forcedCallsFor10Concurrent":1,"I5.consoleOnFallback":{"outcome":"token signed with CACHED after 5000ms","calls":[]},"I6.pendingFakeTimers":{"outcome":"token signed with FRESH13 after 500ms","timers":0},"I7.refreshCalls":1,"I8.signedWith":"token signed with CACHED after 500ms"}
+
+ ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I2 sequential outage cost: 5 calls in a row while the refresh stalls 2ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I3 after STS recovers, does a new call get fresh credentials? 2ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I4 signer-level coalescing for a non-memoized provider (10 concurrent, healthy) 2ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I5 is anything logged on fallback? 2ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I6 fake-timer count after a healthy refresh (includes unref'd timers) 1ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I7 memoizer: plain call within 5 min while a forced refresh is in flight 0ms
+ ✓ assessment/harness/signer-early-refresh.spec.ts > Informational rows (recorded, never fail) > I8 refresh returns credentials that still expire within 15 min: which set signs? 1ms
+ ✓ assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10a 4 min left, 1 call, STS healthy: exactly 1 STS request 240ms
+ ✓ assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10b 4 min left, 10 concurrent calls, STS healthy: exactly 1 STS request 140ms
+ ✓ assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10c 4 min left, 5 sequential calls, STS failing: 1 request per call, all tokens from cached credentials 361ms
+ ✓ assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10d guard: 10 min left, 1 call, STS healthy: 1 early refresh and its credentials are used 141ms
+ ✓ assessment/harness/duplicate-refresh.spec.ts > R10 #8358: one STS refresh per near-expiry window (end to end) > R10e guard: a forced caller still sees the refresh error when STS fails (4 min left) 31ms
+ ✓ assessment/harness/duplicate-refresh.spec.ts > Informational (memoizer unit level) > I7b memoizer: forceRefresh while a passive refresh is in flight: how many link calls? 231ms
+stdout | assessment/harness/duplicate-refresh.spec.ts
+HARNESS_INFO duplicate-refresh.spec.ts {"R10a.stsRequests":1,"R10b.stsRequests":1,"R10c":{"stsRequests":5,"keys":["ASIAFAKE0005","ASIAFAKE0005","ASIAFAKE0005","ASIAFAKE0005","ASIAFAKE0005"]},"R10d":{"stsRequests":1,"signedWith":"ASIAFAKE0007","cachedKey":"ASIAFAKE0006"},"R10e.forcedCallerOutcome":"rejected","I7b.linkCallsAfterWarm":1}
+
+
+ Test Files  2 passed (2)
+      Tests  40 passed (40)
+   Start at  16:37:48
+   Duration  1.68s (transform 353ms, setup 0ms, import 594ms, tests 1.39s, environment 0ms)
+
+JSON report written to D:/ToptalAssessment/aws-sdk-js-v3/assessment/results/reference/harness.json
